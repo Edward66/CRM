@@ -36,9 +36,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    # 'rbac.apps.RbacConfig',
     'stark.apps.StarkConfig',
     'web.apps.WebConfig',
+    'rbac.apps.RbacConfig', # 这样优先会从stark里面找
 ]
 
 MIDDLEWARE = [

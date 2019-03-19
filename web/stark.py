@@ -1,4 +1,9 @@
-from stark.service.version1 import site
+from stark.service.version1 import site, StarkHandler
 from web import models
 
-site.register(models.School)
+
+class SchoolHandler(StarkHandler):
+    list_display = ['title', ]
+
+
+site.register(models.School, SchoolHandler)
