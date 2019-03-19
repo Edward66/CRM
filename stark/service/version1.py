@@ -297,7 +297,12 @@ class StarkHandler:
             return f'<a href="%s" class="btn btn-primary">添加</a>' % self.reverse_add_url()
         return None
 
-    def get_model_form_class(self):
+    def get_model_form_class(self, is_add=False):
+        """
+        定制添加和编辑页面的ModelForm的定制
+        :param is_add:
+        :return:
+        """
         if self.model_form_class:
             return self.model_form_class
 
@@ -385,7 +390,7 @@ class StarkHandler:
                 if action_response:  # 如果有返回值就返回返回值，不往下走了。 例如： redirect('https://www.taobao.com)
                     return action_response
 
-                    # 2. 处理搜索
+        # 2. 处理搜索
 
         search_list = self.get_search_list()
         search_value = request.GET.get('q', '')
@@ -484,7 +489,7 @@ class StarkHandler:
         :return:
         """
 
-        model_form_class = self.get_model_form_class()
+        model_form_class = self.get_model_form_class(is_add=True)
         if request.method == 'GET':
             form = model_form_class
             return render(request, 'stark/change.html', {'form': form})
@@ -509,7 +514,7 @@ class StarkHandler:
 
         if not current_edit_obj:
             return HttpResponse('要修改的数据不存在，请重新选择')
-        model_form_class = self.get_model_form_class()
+        model_form_class = self.get_model_form_class(is_add=False)
         if request.method == 'GET':
             form = model_form_class(instance=current_edit_obj)
             return render(request, 'stark/change.html', {'form': form})
