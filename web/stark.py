@@ -6,4 +6,9 @@ class SchoolHandler(StarkHandler):
     list_display = ['title', ]
 
 
+class DepartmentHandler(StarkHandler):
+    list_display = ['title']
+
+
 site.register(models.School, SchoolHandler)
+site.register(models.Department, DepartmentHandler)

@@ -9,3 +9,13 @@ class School(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Department(models.Model):
+    """
+    部门表
+    """
+    title = models.CharField(verbose_name='部门名称', max_length=16)
+
+    def __str__(self):
+        return self.title
