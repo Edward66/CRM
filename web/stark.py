@@ -2,6 +2,7 @@ from django import forms
 
 from stark.service.version1 import site, StarkHandler, get_choice_text, StarkModelForm
 from web import models
+from web.utils.md5 import gen_md5
 
 
 class SchoolHandler(StarkHandler):
@@ -28,6 +29,11 @@ class UserInfoAddModelForm(StarkModelForm):
             if password != confirm_password:
                 raise forms.ValidationError('密码输入不一致')
         return confirm_password
+
+    def clean(self):
+        password = self.cleaned_data['password']
+        self.cleaned_data['password'] = gen_md5(password)
+        return self.cleaned_data
 
 
 class UserInfoEditModelForm(StarkModelForm):
