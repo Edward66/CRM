@@ -36,7 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'rbac.apps.RbacConfig',
+    # 'rbac.apps.RbacConfig',
     'stark.apps.StarkConfig',
     'web.apps.WebConfig',
 ]
