@@ -3,7 +3,7 @@ from django.urls import re_path
 from django.utils.safestring import mark_safe
 from django.shortcuts import HttpResponse, render, redirect
 
-from stark.service.version1 import site, StarkHandler, get_choice_text, StarkModelForm, StarkForm
+from stark.service.version1 import site, StarkHandler, get_choice_text, StarkModelForm, StarkForm, Option
 from web import models
 from web.utils.md5 import gen_md5
 
@@ -71,6 +71,11 @@ class UserInfoHandler(StarkHandler):
         return mark_safe('<a href="%s">重置密码</a>' % reset_url)
 
     list_display = ['realname', get_choice_text('性别', 'gender'), 'phone', 'email', 'department', display_reset_pwd]
+    search_list = ['name__contains', 'realname__contains']
+    search_group = [
+        Option(field='gender', is_multi=True),
+        Option(field='department', is_multi=True),
+    ]
 
     # 这个的优先级要大于其父类的
     def get_model_form_class(self, is_add=False):
