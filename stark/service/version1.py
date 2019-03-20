@@ -20,6 +20,13 @@ class StarkModelForm(forms.ModelForm):
             field.widget.attrs['class'] = 'form-control'
 
 
+class StarkForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        super(StarkForm, self).__init__(*args, **kwargs)
+        for name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control'
+
+
 def get_choice_text(title, field):
     """
     对于Stark组件中定义列时，choice如果想要显示中文信息，调用此方法即可
@@ -539,11 +546,11 @@ class StarkHandler:
 
         return redirect(list_url)
 
-    def get_url_name(self, crud):
+    def get_url_name(self, params):
         app_name, model_name = self.model_class._meta.app_label, self.model_class._meta.model_name
         if self.prev:
-            return "%s_%s_%s_%s" % (app_name, model_name, self.prev, crud)
-        return "%s_%s_%s" % (app_name, model_name, crud)
+            return "%s_%s_%s_%s" % (app_name, model_name, self.prev, params)
+        return "%s_%s_%s" % (app_name, model_name, params)
 
     @property
     def get_list_url_name(self):
@@ -577,21 +584,25 @@ class StarkHandler:
         """
         return self.get_url_name('delete')
 
-    def reverse_add_url(self):
-        """
-        生成带有原搜索条件的添加URL
-        :return:
-        """
-        name = '%s:%s' % (self.site.namespace, self.get_add_url_name)
-        base_url = reverse(name)
+    def reverse_commons_url(self, name, *args, **kwargs):
+        name = '%s:%s' % (self.site.namespace, name)
+        base_url = reverse(name, args=args, kwargs=kwargs)
         if not self.request.GET:
-            add_url = base_url
+            reverse_url = base_url
         else:
             params = self.request.GET.urlencode()
             new_query_dict = QueryDict(mutable=True)
             new_query_dict['_filter'] = params
-            add_url = '%s?%s' % (base_url, new_query_dict.urlencode())
-        return add_url
+            reverse_url = '%s?%s' % (base_url, new_query_dict.urlencode())
+        return reverse_url
+
+    def reverse_add_url(self, *args, **kwargs):
+        """
+        生成带有原搜索条件的添加URL
+        :return:
+        """
+
+        return self.reverse_commons_url(self.get_add_url_name, *args, **kwargs)
 
     def reverse_edit_url(self, *args, **kwargs):
         """
@@ -600,16 +611,8 @@ class StarkHandler:
         :param kwargs:
         :return:
         """
-        name = '%s:%s' % (self.site.namespace, self.get_edit_url_name)
-        base_url = reverse(name, args=args, kwargs=kwargs)
-        if not self.request.GET:
-            edit_url = base_url
-        else:
-            params = self.request.GET.urlencode()
-            new_query_dict = QueryDict(mutable=True)
-            new_query_dict['_filter'] = params
-            edit_url = '%s?%s' % (base_url, new_query_dict.urlencode())
-        return edit_url
+
+        return self.reverse_commons_url(self.get_edit_url_name, *args, **kwargs)
 
     def reverse_delete_url(self, *args, **kwargs):
         """
@@ -618,16 +621,8 @@ class StarkHandler:
         :param kwargs:
         :return:
         """
-        name = '%s:%s' % (self.site.namespace, self.get_delete_url_name)
-        base_url = reverse(name, args=args, kwargs=kwargs)
-        if not self.request.GET:
-            delete_url = base_url
-        else:
-            params = self.request.GET.urlencode()
-            new_query_dict = QueryDict(mutable=True)
-            new_query_dict['_filter'] = params
-            delete_url = "%s?%s" % (base_url, new_query_dict.urlencode())
-        return delete_url
+
+        return self.reverse_commons_url(self.get_delete_url_name, *args, **kwargs)
 
     def reverse_list_url(self):
         """
