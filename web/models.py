@@ -38,7 +38,7 @@ class UserInfo(RbacUserInfo):
     department = models.ForeignKey(to=Department, verbose_name='部门', on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.name
+        return self.realname
 
 
 class Course(models.Model):
@@ -49,3 +49,21 @@ class Course(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class ClassList(models.Model):
+    """
+    班级表
+    """
+    school = models.ForeignKey(verbose_name='校区', to='School', on_delete=models.CASCADE)
+    course = models.ForeignKey(verbose_name='课程名称', to='Course', on_delete=models.CASCADE)
+    semester = models.PositiveIntegerField(verbose_name='班级(期)')
+    price = models.PositiveIntegerField(verbose_name='学费')
+    start_date = models.DateField(verbose_name='开班日期')
+    graduate_date = models.DateField(verbose_name='结课日期', null=True, blank=True)
+    tutor = models.ForeignKey(verbose_name='班主任', to='UserInfo', related_name='classes', on_delete=models.CASCADE)
+    tech_teacher = models.ManyToManyField(verbose_name='任课老师', to='UserInfo', related_name='teach_classes', blank=True)
+    memo = models.TextField(verbose_name='说明', max_length=255, blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.course.title}{self.semester}期"
