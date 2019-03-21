@@ -356,9 +356,10 @@ class StarkHandler:
 
         return DynamicModelForm
 
-    def save(self, form, is_update=False):
+    def save(self, request, form, is_update, *args, **kwargs):
         """
         在使用ModelForm保存数据之前预留的钩子方法
+        :param request:
         :param form:
         :param is_update:
         :return:
@@ -542,7 +543,7 @@ class StarkHandler:
 
         form = model_form_class(data=request.POST)
         if form.is_valid():
-            self.save(form, is_update=False)
+            self.save(request, form, False, *args, **kwargs)
             # 在数据库保存成功后，跳回列表页面（携带原来的参数）
             return redirect(self.reverse_list_url())
 
@@ -566,7 +567,7 @@ class StarkHandler:
             return render(request, 'stark/change.html', {'form': form})
         form = model_form_class(data=request.POST, instance=current_edit_obj)
         if form.is_valid():
-            self.save(form, is_update=False)
+            self.save(request, form, True, *args, **kwargs)
             return redirect(self.reverse_list_url())
         return render(request, 'stark/change.html', {'form': form})
 
