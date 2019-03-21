@@ -6,6 +6,7 @@
     <title>Stark组件</title>
     <link rel="shortcut icon" href="{% static 'strak/imgs/luffy-study-logo.png' %} ">
     <link rel="stylesheet" href="{% static 'strak/plugins/bootstrap/css/bootstrap.css' %} "/>
+    <link rel="stylesheet" href="{% static 'strak/plugins/datetimepicker/css/bootstrap-datetimepicker.css' %} /">
     <link rel="stylesheet" href="{% static 'strak/plugins/font-awesome/css/font-awesome.css' %} "/>
     <link rel="stylesheet" href="{% static 'strak/css/commons.css' %} "/>
     <link rel="stylesheet" href="{% static 'strak/css/nav.css' %} "/>
@@ -162,6 +163,8 @@
         </div>
     </div>
     <div class="right-body">
+
+
         {% block content %} {% endblock %}
     </div>
 </div>
@@ -169,6 +172,21 @@
 
 <script src="{% static 'strak/js/jquery-3.3.1.min.js' %} "></script>
 <script src="{% static 'strak/plugins/bootstrap/js/bootstrap.js' %} "></script>
+<script src="{% static 'strak/plugins/datetimepicker/js/bootstrap-datetimepicker.js' %} "></script>
+<script src="{% static 'strak/plugins/datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js' %} "></script>
+<script>
+    $('.form_date').datetimepicker({
+        minView: 'month',
+        language: 'zh-CN',
+        format: 'yyyy-mm-dd',
+        bootcssVer: 3,
+        pickerPosition: "bottom-left",
+        weekStart: 1,
+        todayBtn: 1,
+        autoclose: true,
+        todayHighlight: 1,
+    });
+</script>
 {% block js %} {% endblock %}
 </body>
 </html>

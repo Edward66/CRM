@@ -61,8 +61,10 @@ class ClassList(models.Model):
     price = models.PositiveIntegerField(verbose_name='学费')
     start_date = models.DateField(verbose_name='开班日期')
     graduate_date = models.DateField(verbose_name='结课日期', null=True, blank=True)
-    tutor = models.ForeignKey(verbose_name='班主任', to='UserInfo', related_name='classes', on_delete=models.CASCADE)
-    tech_teacher = models.ManyToManyField(verbose_name='任课老师', to='UserInfo', related_name='teach_classes', blank=True)
+    tutor = models.ForeignKey(verbose_name='班主任', to='UserInfo', related_name='classes',
+                              limit_choices_to={'department__title': '教质部'}, on_delete=models.CASCADE)
+    tech_teacher = models.ManyToManyField(verbose_name='任课老师', to='UserInfo', related_name='teach_classes', blank=True,
+                                          limit_choices_to={'department__title__in': ['Python教学部', 'Linux教学部']})
     memo = models.TextField(verbose_name='说明', max_length=255, blank=True, null=True)
 
     def __str__(self):
