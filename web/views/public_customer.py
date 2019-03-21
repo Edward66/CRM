@@ -3,7 +3,7 @@ from django.utils.safestring import mark_safe
 from django.urls import re_path
 from django.shortcuts import HttpResponse, render
 
-from stark.service.version1 import StarkHandler, get_choice_text, get_m2m_text
+from stark.service.version1 import StarkHandler, get_choice_text, get_m2m_text, Option
 from web.forms.public_customer import PublickCustomerModelForm
 from web import models
 
@@ -63,7 +63,7 @@ class PublicCustomerHandler(StarkHandler):
             consultant_id=current_user_id)
         """
 
-        current_user_id = 6  # 暂时写死，等用上权限组件的时候要改成当前登录用户
+        current_user_id = request.session['user_info']['id']
         pk_list = request.POST.getlist('pk')
         UN_SIGN_UP = 2
         private_customer_count = models.Customer.objects.filter(consultant_id=current_user_id,
@@ -91,3 +91,12 @@ class PublicCustomerHandler(StarkHandler):
     action_multi_apply.text = '申请到我的私户'
 
     action_list = [action_multi_apply, ]
+
+    search_list = ['name__contains', ]
+
+    search_group = [
+        Option(field='gender', is_multi=True),
+        Option(field='status', is_multi=True),
+        Option(field='course', is_multi=True),
+        Option(field='education', is_multi=True),
+    ]

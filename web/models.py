@@ -138,8 +138,8 @@ class Customer(models.Model):
         'self',
         blank=True,
         null=True,
-        verbose_name='转介绍自学院',
-        help_text='若此客户是转介绍自内部学员，请在此处选择内部学院的名字',
+        verbose_name='转介绍自学员',
+        help_text='若此客户是转介绍自内部学员，请在此处选择内部学员的名字',
         related_name='internal_referral',
         on_delete=models.CASCADE,
     )
