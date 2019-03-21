@@ -143,7 +143,6 @@ class SearchGroupRow(object):
             else:
                 # {'gender':[1,]}
                 multi_value_list = query_dict.getlist(self.option.field)
-                print(multi_value_list)
                 if value in multi_value_list:
                     multi_value_list.remove(value)
                     query_dict.setlist(self.option.field, multi_value_list)
@@ -413,6 +412,9 @@ class StarkHandler:
 
         return values
 
+    def get_queryset(self, request, *args, **kwargs):
+        return self.model_class.objects
+
     def list_view(self, request, *args, **kwargs):
         """
         列表页面
@@ -449,8 +451,8 @@ class StarkHandler:
         order_list = self.get_order_list()
         # 获取组合搜索的条件
         search_group_condition = self.get_search_group_condition(request)
-        print(search_group_condition)
-        queryset = self.model_class.objects.filter(conn).filter(**search_group_condition).order_by(*order_list)
+        prev_queryset = self.get_queryset(request, *args, **kwargs)
+        queryset = prev_queryset.filter(conn).filter(**search_group_condition).order_by(*order_list)
 
         # 4.处理分页
         all_count = queryset.count()
