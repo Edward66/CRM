@@ -75,6 +75,7 @@ class Customer(models.Model):
     """
     客户表
     """
+    MAX_PRIVATE_CUSTOMER_COUNT = 150
 
     STATUS_CHOICES = [
         (1, '已报名'),
