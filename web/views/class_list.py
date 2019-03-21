@@ -1,5 +1,7 @@
-from stark.service.version1 import (StarkHandler, get_datetime_text,
-                                    get_m2m_text, Option)
+from stark.service.version1 import (
+    StarkHandler, get_datetime_text,
+    get_m2m_text, Option
+)
 from web.forms.class_list import ClassListModelForm
 
 

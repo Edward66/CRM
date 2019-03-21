@@ -1,0 +1,22 @@
+{% extends 'layout.html' %}
+
+
+
+{% block content %}
+    <div class="custom-container">
+        <h1>跟进记录</h1>
+        {% for record in record_list %}
+            <div class="panel panel-primary">
+                <div class="panel-body">
+                    {{ record.note }}
+                    <div style="margin:5px 0;">
+                        <div style="display:inline-block;"><i class="fa fa-user-o"></i> {{ record.consultant.name }}
+                        </div>
+                        <div style="display:inline-block;"><i class="fa fa-clock-o"></i> {{ record.date }}</div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+
+    </div>
+{% endblock content %}

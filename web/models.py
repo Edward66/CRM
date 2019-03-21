@@ -158,3 +158,13 @@ class Customer(models.Model):
 
     def __str__(self):
         return f'姓名：{self.name},联系方式：{self.contact_info}'
+
+
+class ConsultRecord(models.Model):
+    """
+    客户跟进记录
+    """
+    customer = models.ForeignKey(verbose_name='所咨询客户', to='Customer', on_delete=models.CASCADE)
+    consultant = models.ForeignKey(verbose_name='跟踪人', to='UserInfo', on_delete=models.CASCADE)
+    note = models.TextField(verbose_name='跟进内容')
+    date = models.DateField(verbose_name='跟进日期', auto_now_add=True)
