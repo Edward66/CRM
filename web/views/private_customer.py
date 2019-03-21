@@ -17,3 +17,21 @@ class PrivateCustomerHandler(StarkHandler):
             current_user_id = request.session['user_info']['id']
             form.instance.consultant_id = current_user_id
         form.save()
+
+    def action_multi_transfer(self, request, *args, **kwargs):
+        """
+        批量移除到公户
+        :param request:
+        :param args:
+        :param kwargs:
+        :return:
+        """
+        current_user_id = request.session['user_info']['id']
+        pk_list = request.POST.getlist('pk')
+        self.model_class.objects.filter(id__in=pk_list, consultant_id=current_user_id).update(
+            consultant=None
+        )
+
+    action_multi_transfer.text = '移除到公户'
+
+    action_list = [action_multi_transfer, ]
