@@ -222,7 +222,7 @@ class Option(object):
         return field_object.pk
 
 
-class StarkSite:
+class StarkSite(object):
     def __init__(self):
         self._registry = []
         self.app_name = 'stark'
@@ -273,7 +273,7 @@ class StarkSite:
         return self.get_urls(), self.app_name, self.namespace
 
 
-class StarkHandler:
+class StarkHandler(object):
     list_display = []
     per_page_count = 10
     has_add_btn = True
@@ -281,8 +281,11 @@ class StarkHandler:
     order_list = []
     search_list = []
     action_list = []
-
     search_group = []
+    list_template = None
+    add_template = None
+    edit_template = None
+    delete_template = None
 
     def __init__(self, site, model_class, prev):
         self.site = site
@@ -527,7 +530,8 @@ class StarkHandler:
             'search_group_row_list': search_group_row_list,
         }
 
-        return render(request, 'stark/data_list.html', context)
+        # 定义了self.list_template就用self.list_template当模板
+        return render(request, self.list_template or 'stark/data_list.html', context)
 
     def add_view(self, request, *args, **kwargs):
         """
@@ -539,7 +543,7 @@ class StarkHandler:
         model_form_class = self.get_model_form_class(is_add=True)
         if request.method == 'GET':
             form = model_form_class
-            return render(request, 'stark/change.html', {'form': form})
+            return render(request, self.add_template or 'stark/change.html', {'form': form})
 
         form = model_form_class(data=request.POST)
         if form.is_valid():
@@ -547,7 +551,7 @@ class StarkHandler:
             # 在数据库保存成功后，跳回列表页面（携带原来的参数）
             return redirect(self.reverse_list_url())
 
-        return render(request, 'stark/change.html', {'form': form})
+        return render(request, self.add_template or 'stark/change.html', {'form': form})
 
     def edit_view(self, request, pk, *args, **kwargs):
         """
@@ -564,12 +568,12 @@ class StarkHandler:
         model_form_class = self.get_model_form_class(is_add=False)
         if request.method == 'GET':
             form = model_form_class(instance=current_edit_obj)
-            return render(request, 'stark/change.html', {'form': form})
+            return render(request, self.edit_template or 'stark/change.html', {'form': form})
         form = model_form_class(data=request.POST, instance=current_edit_obj)
         if form.is_valid():
             self.save(request, form, True, *args, **kwargs)
             return redirect(self.reverse_list_url())
-        return render(request, 'stark/change.html', {'form': form})
+        return render(request, self.edit_template or 'stark/change.html', {'form': form})
 
     def delete_view(self, request, pk, *args, **kwargs):
         """
@@ -581,7 +585,7 @@ class StarkHandler:
 
         list_url = self.reverse_list_url()
         if request.method == 'GET':
-            return render(request, 'stark/delete.html', {'cancel': list_url})
+            return render(request, self.delete_template or 'stark/delete.html', {'cancel': list_url})
         self.model_class.objects.filter(pk=pk).delete()
 
         return redirect(list_url)
