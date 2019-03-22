@@ -112,7 +112,6 @@ class SearchGroupRow(object):
             # 下面是没有选中全部
             # 如果有参数，那么就把这个参数剔除掉。比如，选中了gender，就把gender剔除。如果没选部门，那么gender对应的全部的url就是?。 ?gender=1去掉后只剩?
             # 如果选部门了，也选了gender，那gender中的全部，对应的url就是部门的url。 gender=1&depart=1。 去掉后只剩depart=1
-            # print('------>', total_query_dict)
             yield '<a href="?%s">全部</a>' % total_query_dict.urlencode()
 
         for item in self.queryset_or_tuple:
@@ -369,7 +368,7 @@ class StarkHandler(object):
         """
         form.save()
 
-    def display_checkbox(self, obj=None, is_header=None):
+    def display_checkbox(self, obj=None, is_header=None, *args, **kwargs):
         """
         自定义显示的列
         :param obj:
@@ -380,7 +379,7 @@ class StarkHandler(object):
             return '选择'
         return mark_safe('<input type="checkbox" name="pk" value="%s"/>' % obj.pk)
 
-    def display_edit(self, obj=None, is_header=None):
+    def display_edit(self, obj=None, is_header=None, *args, **kwargs):
         """
         自定义页面显示的列（表头和内容）
         :param obj:
@@ -389,18 +388,18 @@ class StarkHandler(object):
         """
         if is_header:
             return '编辑表头'
-        return mark_safe('<a href="%s">编辑</a>' % self.reverse_edit_url(pk=obj.pk))
+        return mark_safe('<a href="%s">编辑</a>' % self.reverse_edit_url(pk=obj.pk, *args, **kwargs))
 
-    def display_del(self, obj=None, is_header=None):
+    def display_del(self, obj=None, is_header=None, *args, **kwargs):
         if is_header:
             return '删除表头'
-        return mark_safe('<a href="%s">删除</a>' % self.reverse_delete_url(pk=obj.pk))
+        return mark_safe('<a href="%s">删除</a>' % self.reverse_delete_url(pk=obj.pk, *args, **kwargs))
 
-    def display_edit_del(self, obj=None, is_header=None):
+    def display_edit_del(self, obj=None, is_header=None, *args, **kwargs):
         if is_header:
             return '操作'
         tpl = '<a href="%s">编辑</a> <a href="%s">删除</a>' % (
-            self.reverse_edit_url(pk=obj.pk), self.reverse_delete_url(pk=obj.pk))
+            self.reverse_edit_url(pk=obj.pk), self.reverse_delete_url(pk=obj.pk, *args, **kwargs))
         return mark_safe(tpl)
 
     def get_list_display(self):
@@ -412,7 +411,8 @@ class StarkHandler(object):
         if self.list_display:
             values.extend(self.list_display)
             # 默认显示编辑和删除
-            values.append(StarkHandler.display_edit_del)
+            # type(self) 当前对象的类
+            values.append(type(self).display_edit_del)
 
         return values
 
@@ -500,7 +500,7 @@ class StarkHandler(object):
                 for field_or_func in list_display:
                     if isinstance(field_or_func, FunctionType):
                         # field_or_func是函数（类调用的），所以要传递self
-                        tr_list.append(field_or_func(self, queryset_obj, is_header=False))
+                        tr_list.append(field_or_func(self, queryset_obj, is_header=False, *args, **kwargs))
                     else:
                         tr_list.append(getattr(queryset_obj, field_or_func))  # obj.depart
             else:
@@ -572,7 +572,7 @@ class StarkHandler(object):
         form = model_form_class(data=request.POST, instance=current_edit_obj)
         if form.is_valid():
             self.save(request, form, True, *args, **kwargs)
-            return redirect(self.reverse_list_url())
+            return redirect(self.reverse_list_url(*args, **kwargs))
         return render(request, self.edit_template or 'stark/change.html', {'form': form})
 
     def delete_view(self, request, pk, *args, **kwargs):
@@ -583,7 +583,7 @@ class StarkHandler(object):
         :return:
         """
 
-        list_url = self.reverse_list_url()
+        list_url = self.reverse_list_url(*args, **kwargs)
         if request.method == 'GET':
             return render(request, self.delete_template or 'stark/delete.html', {'cancel': list_url})
         self.model_class.objects.filter(pk=pk).delete()

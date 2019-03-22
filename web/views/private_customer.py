@@ -8,7 +8,7 @@ from web.forms.private_customer import PrivateCustomerModelForm
 class PrivateCustomerHandler(StarkHandler):
     model_form_class = PrivateCustomerModelForm
 
-    def display_record(self, obj=None, is_header=None):
+    def display_record(self, obj=None, is_header=None,*args,**kwargs):
         if is_header:
             return '跟进记录'
         # 这个用不着加原搜索条件,加了也用不上。到跟进记录页面后，增删改后没必要返回到私户页面，而是返回跟进记录的列表页面
