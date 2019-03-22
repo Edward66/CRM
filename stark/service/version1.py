@@ -547,11 +547,17 @@ class StarkHandler(object):
 
         form = model_form_class(data=request.POST)
         if form.is_valid():
-            self.save(request, form, False, *args, **kwargs)
-            # 在数据库保存成功后，跳回列表页面（携带原来的参数）
-            return redirect(self.reverse_list_url(*args, **kwargs))
+            response = self.save(request, form, False, *args, **kwargs)
+            # 如果response有值（错误信息）就返回response
+            return response or redirect(self.reverse_list_url(*args, **kwargs))
 
         return render(request, self.add_template or 'stark/change.html', {'form': form})
+
+    def get_edit_object(self, request, pk, *args, **kwargs):
+        return self.model_class.objects.filter(pk=pk).first()
+
+    def get_delete_object(self, request, pk, *args, **kwargs):
+        return self.model_class.objects.filter(pk=pk).delete()
 
     def edit_view(self, request, pk, *args, **kwargs):
         """
@@ -561,18 +567,20 @@ class StarkHandler(object):
         :return:
         """
 
-        current_edit_obj = self.model_class.objects.filter(pk=pk).first()
+        current_edit_obj = self.get_edit_object(request, pk, *args, **kwargs)
 
         if not current_edit_obj:
             return HttpResponse('要修改的数据不存在，请重新选择')
+
         model_form_class = self.get_model_form_class(is_add=False)
         if request.method == 'GET':
             form = model_form_class(instance=current_edit_obj)
             return render(request, self.edit_template or 'stark/change.html', {'form': form})
         form = model_form_class(data=request.POST, instance=current_edit_obj)
         if form.is_valid():
-            self.save(request, form, True, *args, **kwargs)
-            return redirect(self.reverse_list_url(*args, **kwargs))
+            response = self.save(request, form, True, *args, **kwargs)
+            # 如果response有值（错误信息）就返回response
+            return response or redirect(self.reverse_list_url(*args, **kwargs))
         return render(request, self.edit_template or 'stark/change.html', {'form': form})
 
     def delete_view(self, request, pk, *args, **kwargs):
@@ -586,9 +594,9 @@ class StarkHandler(object):
         list_url = self.reverse_list_url(*args, **kwargs)
         if request.method == 'GET':
             return render(request, self.delete_template or 'stark/delete.html', {'cancel': list_url})
-        self.model_class.objects.filter(pk=pk).delete()
+        response = self.get_delete_object(request, pk, *args, **kwargs)
 
-        return redirect(list_url)
+        return response or redirect(list_url)
 
     def get_url_name(self, params):
         app_name, model_name = self.model_class._meta.app_label, self.model_class._meta.model_name
