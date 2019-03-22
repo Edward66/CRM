@@ -338,9 +338,9 @@ class StarkHandler(object):
     def get_order_list(self):
         return self.order_list or ['-id', ]
 
-    def get_add_btn(self):
+    def get_add_btn(self, request, *args, **kwargs):
         if self.has_add_btn:
-            return f'<a href="%s" class="btn btn-primary">添加</a>' % self.reverse_add_url()
+            return f'<a href="%s" class="btn btn-primary">添加</a>' % self.reverse_add_url(*args, **kwargs)
         return None
 
     def get_model_form_class(self, is_add=False):
@@ -508,7 +508,7 @@ class StarkHandler(object):
             body_list.append(tr_list)
 
         # 7.处理添加按钮
-        add_btn = self.get_add_btn()
+        add_btn = self.get_add_btn(request, *args, **kwargs)
 
         # 8. 处理组合搜索
         search_group = self.get_search_group()  # ['gender','depart']
@@ -549,7 +549,7 @@ class StarkHandler(object):
         if form.is_valid():
             self.save(request, form, False, *args, **kwargs)
             # 在数据库保存成功后，跳回列表页面（携带原来的参数）
-            return redirect(self.reverse_list_url())
+            return redirect(self.reverse_list_url(*args, **kwargs))
 
         return render(request, self.add_template or 'stark/change.html', {'form': form})
 
@@ -668,13 +668,13 @@ class StarkHandler(object):
 
         return self.reverse_commons_url(self.get_delete_url_name, *args, **kwargs)
 
-    def reverse_list_url(self):
+    def reverse_list_url(self, *args, **kwargs):
         """
         跳转回列表页面时，生成的URL
         :return:
         """
         name = '%s:%s' % (self.site.namespace, self.get_list_url_name)
-        basic_url = reverse(name)
+        basic_url = reverse(name, args=args, kwargs=kwargs)
         params = self.request.GET.get('_filter')
         if not params:
             return basic_url
