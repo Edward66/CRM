@@ -56,14 +56,14 @@ class ConsultRecordHandler(StarkHandler):
         customer_id = kwargs.get('customer_id')
         current_user_id = request.session['user_info']['id']
         # 当前记录的客户的课程顾问必须是登录的课程顾问
-        return models.Customer.objects.objects.filter(pk=pk, customer_id=customer_id,
-                                               customer__consultant_id=current_user_id).first()
+        return models.ConsultRecord.objects.objects.filter(pk=pk, customer_id=customer_id,
+                                                           customer__consultant_id=current_user_id).first()
 
     def get_delete_object(self, request, pk, *args, **kwargs):
         customer_id = kwargs.get('customer_id')
         current_user_id = request.session['user_info']['id']
-        record_queryset = models.Customer.objects.objects.filter(pk=pk, customer_id=customer_id,
-                                                          customer__consultant_id=current_user_id)
+        record_queryset = models.ConsultRecord.objects.objects.filter(pk=pk, customer_id=customer_id,
+                                                                      customer__consultant_id=current_user_id)
 
         if not record_queryset.exists():
             return HttpResponse('要删除的记录不存在，请重新选择')
