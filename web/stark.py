@@ -3,6 +3,7 @@ from web import models
 from web.views.course import CourseHandler
 from web.views.class_list import ClassListHandler
 from web.views.consult_record import ConsultRecordHandler
+from web.views.check_payment_record import CheckPaymentRecord
 from web.views.department import DepartmentHandler
 from web.views.public_customer import PublicCustomerHandler
 from web.views.private_customer import PrivateCustomerHandler
@@ -19,3 +20,4 @@ site.register(models.Course, CourseHandler)
 site.register(models.ClassList, ClassListHandler)
 site.register(models.ConsultRecord, ConsultRecordHandler)
 site.register(models.PaymentRecord, PaymentRecordHandler)
+site.register(models.PaymentRecord, CheckPaymentRecord, 'check')
