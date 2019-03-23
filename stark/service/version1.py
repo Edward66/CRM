@@ -53,7 +53,7 @@ def get_datetime_text(title, field, time_format='%Y-%m-%d'):
     :return:
     """
 
-    def wrapper(self, obj=None, is_header=None):
+    def wrapper(self, obj=None, is_header=None, *args, **kwargs):
         if is_header:
             return title
         datetime_value = getattr(obj, field)

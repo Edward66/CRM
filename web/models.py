@@ -230,3 +230,32 @@ class ScoreRecord(models.Model):
     content = models.TextField(verbose_name='理由')
     score = models.IntegerField(verbose_name='分值', help_text='违纪扣分写负值，表现加分写正值')
     user = models.ForeignKey(verbose_name='执行人', to='UserInfo', on_delete=models.PROTECT)
+
+
+class CourseRecord(models.Model):
+    """
+    上课记录表
+    """
+    class_object = models.ForeignKey(verbose_name="班级", to="ClassList", on_delete=models.CASCADE)
+    day_num = models.IntegerField(verbose_name="节次")
+    teacher = models.ForeignKey(verbose_name="讲师", to='UserInfo', on_delete=models.CASCADE)
+    date = models.DateField(verbose_name="上课日期", auto_now_add=True)
+
+    def __str__(self):
+        return "{0} day{1}".format(self.class_object, self.day_num)
+
+
+class StudyRecord(models.Model):
+    """
+    学生考勤记录
+    """
+    RECORD_CHOICES = (
+        ('checked', "已签到"),
+        ('vacate', "请假"),
+        ('late', "迟到"),
+        ('noshow', "缺勤"),
+        ('leave_early', "早退"),
+    )
+    course_record = models.ForeignKey(verbose_name="第几天课程", to="CourseRecord", on_delete=models.CASCADE)
+    student = models.ForeignKey(verbose_name="学员", to='Student', on_delete=models.CASCADE)
+    record = models.CharField("上课纪录", choices=RECORD_CHOICES, default="checked", max_length=64)

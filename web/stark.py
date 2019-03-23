@@ -1,6 +1,7 @@
 from stark.service.version1 import site
 from web import models
 from web.views.course import CourseHandler
+from web.views.course_record import CourseRecordHandler
 from web.views.class_list import ClassListHandler
 from web.views.consult_record import ConsultRecordHandler
 from web.views.check_payment_record import CheckPaymentRecord
@@ -25,3 +26,4 @@ site.register(models.PaymentRecord, PaymentRecordHandler)
 site.register(models.PaymentRecord, CheckPaymentRecord, 'check')
 site.register(models.Student, StudentHandler)
 site.register(models.ScoreRecord, ScoreHandler)
+site.register(models.CourseRecord, CourseRecordHandler)
