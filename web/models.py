@@ -215,7 +215,7 @@ class Student(models.Model):
     emergency_contact = models.CharField(verbose_name='紧急联系人电话', max_length=32)
     class_list = models.ManyToManyField(verbose_name='已报班级', to='ClassList', blank=True)  # m2m默认可以为空，不用设置null
     student_status = models.PositiveIntegerField(verbose_name='学员状态', choices=STUDENT_STATUS_CHOICES, default=1)
-    memo = models.CharField(verbose_name='备注', max_length=255, blank=True, null=True)
+    memo = models.TextField(verbose_name='备注', blank=True, null=True)
 
     def __str__(self):
         return self.customer.name
