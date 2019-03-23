@@ -10,6 +10,7 @@ from web.views.private_customer import PrivateCustomerHandler
 from web.views.payment_record import PaymentRecordHandler
 from web.views.school import SchoolHandler
 from web.views.student import StudentHandler
+from web.views.score_record import ScoreHandler
 from web.views.userinfo import UserInfoHandler
 
 site.register(models.School, SchoolHandler)
@@ -23,3 +24,4 @@ site.register(models.ConsultRecord, ConsultRecordHandler)
 site.register(models.PaymentRecord, PaymentRecordHandler)
 site.register(models.PaymentRecord, CheckPaymentRecord, 'check')
 site.register(models.Student, StudentHandler)
+site.register(models.ScoreRecord, ScoreHandler)

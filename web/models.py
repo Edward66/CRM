@@ -35,7 +35,7 @@ class UserInfo(RbacUserInfo):
     realname = models.CharField(verbose_name='真实姓名', max_length=16)
     phone = models.CharField(verbose_name='手机号', max_length=32)
     gender = models.PositiveIntegerField(verbose_name='性别', choices=GENDER_ITEMS, default=MALE)
-    department = models.ForeignKey(to=Department, verbose_name='部门', on_delete=models.CASCADE)
+    department = models.ForeignKey(to=Department, verbose_name='部门', on_delete=models.DO_NOTHING)
 
     def __str__(self):
         return self.realname
@@ -56,7 +56,7 @@ class ClassList(models.Model):
     班级表
     """
     school = models.ForeignKey(verbose_name='校区', to='School', on_delete=models.CASCADE)
-    course = models.ForeignKey(verbose_name='课程名称', to='Course', on_delete=models.CASCADE)
+    course = models.ForeignKey(verbose_name='课程名称', to='Course', on_delete=models.DO_NOTHING)
     semester = models.PositiveIntegerField(verbose_name='班级(期)')
     price = models.PositiveIntegerField(verbose_name='学费')
     start_date = models.DateField(verbose_name='开班日期')
@@ -145,7 +145,7 @@ class Customer(models.Model):
     )
     course = models.ManyToManyField(verbose_name='课程咨询', to='Course')
     consultant = models.ForeignKey(verbose_name='课程顾问', to='UserInfo', related_name='consultant', null=True, blank=True,
-                                   on_delete=models.CASCADE, limit_choices_to={'department__title': '销售部'})
+                                   on_delete=models.DO_NOTHING, limit_choices_to={'department__title': '销售部'})
     education = models.PositiveIntegerField(verbose_name='学历', choices=EDUCATION_CHOICES, blank=True, null=True)
     graduation_school = models.CharField(verbose_name='毕业学院', max_length=64, blank=True, null=True)
     major = models.CharField(verbose_name='所学专业', max_length=64, blank=True, null=True)
@@ -186,11 +186,11 @@ class PaymentRecord(models.Model):
         (2, '已确认'),
         (3, '已驳回'),
     ]
-    customer = models.ForeignKey(verbose_name='客户', to='Customer', on_delete=models.CASCADE)
+    customer = models.ForeignKey(verbose_name='客户', to='Customer', on_delete=models.DO_NOTHING)
     consultant = models.ForeignKey(verbose_name='课程顾问', to='UserInfo', help_text='谁签的单选谁', on_delete=models.CASCADE)
     pay_type = models.IntegerField(verbose_name='费用类型', choices=PAY_TYPE_CHOICES, default=1)
     paid_fee = models.IntegerField(verbose_name='金额', default=0)
-    class_list = models.ForeignKey(verbose_name='申请班级', to='ClassList', on_delete=models.CASCADE)
+    class_list = models.ForeignKey(verbose_name='申请班级', to='ClassList', on_delete=models.DO_NOTHING)
     apply_date = models.DateTimeField(verbose_name='申请日期', auto_now_add=True)
     confirm_status = models.PositiveIntegerField(verbose_name='确认状态', choices=CONFIRM_STATUS_CHOICES, default=1)
     confirm_date = models.DateTimeField(verbose_name='确认日期', null=True, blank=True)
@@ -215,7 +215,18 @@ class Student(models.Model):
     emergency_contact = models.CharField(verbose_name='紧急联系人电话', max_length=32)
     class_list = models.ManyToManyField(verbose_name='已报班级', to='ClassList', blank=True)  # m2m默认可以为空，不用设置null
     student_status = models.PositiveIntegerField(verbose_name='学员状态', choices=STUDENT_STATUS_CHOICES, default=1)
+    score = models.IntegerField(verbose_name='积分', default=100, help_text='一入学就有100的积分')
     memo = models.TextField(verbose_name='备注', blank=True, null=True)
 
     def __str__(self):
         return self.customer.name
+
+
+class ScoreRecord(models.Model):
+    """
+    积分记录
+    """
+    student = models.ForeignKey(verbose_name='学生', to='Student', on_delete=models.CASCADE)
+    content = models.TextField(verbose_name='理由')
+    score = models.IntegerField(verbose_name='分值', help_text='违纪扣分写负值，表现加分写正值')
+    user = models.ForeignKey(verbose_name='执行人', to='UserInfo', on_delete=models.PROTECT)
