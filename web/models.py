@@ -212,8 +212,8 @@ class Student(models.Model):
     customer = models.OneToOneField(verbose_name='客户信息', to='Customer', on_delete=models.CASCADE)
     qq = models.CharField(verbose_name='QQ号', max_length=32)
     mobile = models.CharField(verbose_name='手机号', max_length=32)
-    emergency_contract = models.CharField(verbose_name='紧急联系人电话', max_length=32)
-    class_list = models.ManyToManyField(verbose_name='已报班级', to='ClassList', blank=True)
+    emergency_contact = models.CharField(verbose_name='紧急联系人电话', max_length=32)
+    class_list = models.ManyToManyField(verbose_name='已报班级', to='ClassList', blank=True, null=True)
     student_status = models.PositiveIntegerField(verbose_name='学员状态', choices=STUDENT_STATUS_CHOICES, default=1)
     memo = models.CharField(verbose_name='备注', max_length=255, blank=True, null=True)
 

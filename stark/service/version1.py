@@ -35,7 +35,7 @@ def get_choice_text(title, field):
     :return:
     """
 
-    def wrapper(self, obj=None, is_header=None):
+    def wrapper(self, obj=None, is_header=None, *args, **kwargs):
         if is_header:
             return title
         method = 'get_%s_display' % field
@@ -342,7 +342,7 @@ class StarkHandler(object):
             return f'<a href="%s" class="btn btn-primary">添加</a>' % self.reverse_add_url(*args, **kwargs)
         return None
 
-    def get_model_form_class(self, is_add=False):
+    def get_model_form_class(self, is_add, request, pk, *args, **kwargs):
         """
         定制添加和编辑页面的ModelForm的定制
         :param is_add:
@@ -500,7 +500,7 @@ class StarkHandler(object):
                 for field_or_func in list_display:
                     if isinstance(field_or_func, FunctionType):
                         # field_or_func是函数（类调用的），所以要传递self
-                        tr_list.append(field_or_func(self, queryset_obj, is_header=False, *args, **kwargs))
+                        tr_list.append(field_or_func(self, queryset_obj, False, *args, **kwargs))
                     else:
                         tr_list.append(getattr(queryset_obj, field_or_func))  # obj.depart
             else:
@@ -540,7 +540,7 @@ class StarkHandler(object):
         :return:
         """
 
-        model_form_class = self.get_model_form_class(is_add=True)
+        model_form_class = self.get_model_form_class(True, request, None, *args, **kwargs)
         if request.method == 'GET':
             form = model_form_class
             return render(request, self.add_template or 'stark/change.html', {'form': form})
@@ -572,7 +572,7 @@ class StarkHandler(object):
         if not current_edit_obj:
             return HttpResponse('要修改的数据不存在，请重新选择')
 
-        model_form_class = self.get_model_form_class(is_add=False)
+        model_form_class = self.get_model_form_class(False, request, pk, *args, **kwargs)
         if request.method == 'GET':
             form = model_form_class(instance=current_edit_obj)
             return render(request, self.edit_template or 'stark/change.html', {'form': form})
