@@ -3,9 +3,10 @@ from django.urls import reverse
 
 from stark.service.version1 import StarkHandler, get_choice_text, get_m2m_text
 from web.forms.private_customer import PrivateCustomerModelForm
+from web.views.base import PermissionHanlder
 
 
-class PrivateCustomerHandler(StarkHandler):
+class PrivateCustomerHandler(PermissionHanlder, StarkHandler):
     model_form_class = PrivateCustomerModelForm
 
     def display_record(self, obj=None, is_header=None, *args, **kwargs):

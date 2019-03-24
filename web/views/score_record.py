@@ -2,9 +2,10 @@ from django.urls import re_path
 
 from stark.service.version1 import StarkHandler
 from web.forms.score_record import ScoreRecordModelForm
+from web.views.base import PermissionHanlder
 
 
-class ScoreHandler(StarkHandler):
+class ScoreHandler(PermissionHanlder,StarkHandler):
     list_display = ['content', 'score', 'user', ]
     model_form_class = ScoreRecordModelForm
 
@@ -16,7 +17,7 @@ class ScoreHandler(StarkHandler):
         patterns.extend(self.extra_urls())
         return patterns
 
-    def get_list_display(self):
+    def get_list_display(self,request,*args,**kwargs):
         values = []
         if self.list_display:
             values.extend(self.list_display)

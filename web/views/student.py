@@ -4,9 +4,10 @@ from django.shortcuts import reverse
 
 from stark.service.version1 import StarkHandler, Option, get_choice_text, get_m2m_text
 from web.forms.student import StudentModelForm
+from web.views.base import PermissionHanlder
 
 
-class StudentHandler(StarkHandler):
+class StudentHandler(PermissionHanlder, StarkHandler):
 
     def display_score(self, obj=None, is_header=None, *args, **kwargs):
         if is_header:
@@ -22,7 +23,7 @@ class StudentHandler(StarkHandler):
     def get_add_btn(self, request, *args, **kwargs):
         return None
 
-    def get_list_display(self):
+    def get_list_display(self, request, *args, **kwargs):
         values = []
         if self.list_display:
             values.extend(self.list_display)

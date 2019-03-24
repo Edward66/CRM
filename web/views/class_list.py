@@ -6,9 +6,10 @@ from stark.service.version1 import (
     get_m2m_text, Option
 )
 from web.forms.class_list import ClassListModelForm
+from web.views.base import PermissionHanlder
 
 
-class ClassListHandler(StarkHandler):
+class ClassListHandler(PermissionHanlder, StarkHandler):
     def display_course(self, obj=None, is_header=None, *args, **kwargs):
         if is_header:
             return '班级'

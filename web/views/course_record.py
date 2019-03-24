@@ -7,9 +7,10 @@ from stark.service.version1 import StarkHandler, get_datetime_text
 from web import models
 from web.forms.course_record import CourseRecordModelForm
 from web.forms.study_record import StudyRecordModelForm
+from web.views.base import PermissionHanlder
 
 
-class CourseRecordHandler(StarkHandler):
+class CourseRecordHandler(PermissionHanlder,StarkHandler):
     model_form_class = CourseRecordModelForm
 
     def display_attendance(self, obj=None, is_header=None, *args, **kwargs):

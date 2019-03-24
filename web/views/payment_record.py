@@ -2,11 +2,12 @@ from django.shortcuts import HttpResponse
 from django.urls import re_path
 
 from stark.service.version1 import StarkHandler, get_choice_text
-from web.forms.payment_record import PaymentRecordModelForm, StudentPaymentRecordModelForm
 from web import models
+from web.forms.payment_record import PaymentRecordModelForm, StudentPaymentRecordModelForm
+from web.views.base import PermissionHanlder
 
 
-class PaymentRecordHandler(StarkHandler):
+class PaymentRecordHandler(PermissionHanlder, StarkHandler):
     """
     缴费记录不允许编辑和删除
     """
@@ -30,7 +31,7 @@ class PaymentRecordHandler(StarkHandler):
         current_user_id = request.session['user_info']['id']
         return self.model_class.objects.filter(customer_id=customer_id, customer__consultant_id=current_user_id)
 
-    def get_list_display(self):
+    def get_list_display(self, request, *args, **kwargs):
         """
         获取页面上应该显示的列,自定义扩展，列如：根据用户的不同来显示不同的列
         :return:

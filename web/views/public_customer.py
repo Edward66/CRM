@@ -4,11 +4,12 @@ from django.urls import re_path
 from django.shortcuts import HttpResponse, render
 
 from stark.service.version1 import StarkHandler, get_choice_text, get_m2m_text, Option
-from web.forms.public_customer import PublickCustomerModelForm
 from web import models
+from web.forms.public_customer import PublickCustomerModelForm
+from web.views.base import PermissionHanlder
 
 
-class PublicCustomerHandler(StarkHandler):
+class PublicCustomerHandler(PermissionHanlder, StarkHandler):
     def display_record(self, obj=None, is_header=None, *args, **kwargs):
         if is_header:
             return '跟进记录'

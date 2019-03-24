@@ -5,9 +5,10 @@ from django.shortcuts import HttpResponse, render, redirect
 from stark.service.version1 import StarkHandler, get_choice_text, Option
 from web import models
 from web.forms.userinfo import UserInfoAddModelForm, UserInfoEditModelForm, ResetPasswordForm
+from web.views.base import PermissionHanlder
 
 
-class UserInfoHandler(StarkHandler):
+class UserInfoHandler(PermissionHanlder, StarkHandler):
     def display_reset_pwd(self, obj=None, is_header=None, *args, **kwargs):
         if is_header:
             return '重置密码'

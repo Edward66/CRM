@@ -5,9 +5,10 @@ from django.utils.safestring import mark_safe
 from stark.service.version1 import StarkHandler
 from web import models
 from web.forms.consult_record import ConsuleRecordModelForm
+from web.views.base import PermissionHanlder
 
 
-class ConsultRecordHandler(StarkHandler):
+class ConsultRecordHandler(PermissionHanlder,StarkHandler):
     list_display = ['note', 'consultant', 'date']
     list_template = 'consult_record.html'
     model_form_class = ConsuleRecordModelForm

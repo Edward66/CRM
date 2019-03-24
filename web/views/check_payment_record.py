@@ -1,9 +1,10 @@
 from django.urls import re_path
 
 from stark.service.version1 import StarkHandler, get_choice_text, get_datetime_text
+from web.views.base import PermissionHanlder
 
 
-class CheckPaymentRecord(StarkHandler):
+class CheckPaymentRecord(PermissionHanlder, StarkHandler):
     order_list = ['-id', 'confirm_status']
 
     # TODO:customer换成这个客户的真名和真实联系方式（在Student表中）
@@ -13,16 +14,10 @@ class CheckPaymentRecord(StarkHandler):
                     get_choice_text('审核状态', 'confirm_status'),
                     'consultant', ]
 
-    def get_list_display(self):
-        """
-        获取页面上应该显示的列,自定义扩展，列如：根据用户的不同来显示不同的列
-        :return:
-        """
+    def get_list_display(self, request, *args, **kwargs):
         values = []
         if self.list_display:
             values.extend(self.list_display)
-            # 默认显示编辑和删除
-            # type(self) 当前对象的类
         return values
 
     def get_add_btn(self, request, *args, **kwargs):

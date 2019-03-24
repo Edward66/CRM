@@ -1,5 +1,6 @@
 from stark.service.version1 import StarkHandler
+from web.views.base import PermissionHanlder
 
 
-class DepartmentHandler(StarkHandler):
+class DepartmentHandler(PermissionHanlder,StarkHandler):
     list_display = ['title']

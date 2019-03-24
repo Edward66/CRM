@@ -402,7 +402,7 @@ class StarkHandler(object):
             self.reverse_edit_url(pk=obj.pk), self.reverse_delete_url(pk=obj.pk, *args, **kwargs))
         return mark_safe(tpl)
 
-    def get_list_display(self):
+    def get_list_display(self, request, *args, **kwargs):
         """
         获取页面上应该显示的列,自定义扩展，列如：根据用户的不同来显示不同的列
         :return:
@@ -473,7 +473,7 @@ class StarkHandler(object):
 
         data_list = queryset[pager.start:pager.end]
 
-        list_display = self.get_list_display()
+        list_display = self.get_list_display(request, *args, **kwargs)
 
         # 5. 处理表格的表头
         # 访问http://127.0.0.1:8000/stark/app01/userinfo/list
