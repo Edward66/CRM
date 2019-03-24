@@ -40,7 +40,10 @@ def recursion_urls(pre_namespace, pre_url, urlpatterns, url_ordered_dict):
             # 判断url有没有前缀，如果有前缀的话我们要给它拼接上，一般url都是有前缀的，因为从根级路由开始我们就加了个/
             url = pre_url + item.pattern.regex.pattern  # pattern.regex.pattern是拿到当前url django 1.X里是 url._regex
             # 拼接完长这样：/^rbac/^user/edit/(?P<pk>\d_+)/$
-            url = url.replace('^', '').replace('$', '')  # 把起始符和终止符替换成空的，最后得到:/rbac/user/edit/(?P<pk>\d_+)/
+            url = url.replace('^', '').replace('$', '').replace('\/', '/')
+            # 把起始符和终止符替换成空的，最后得到:/rbac/user/edit/(?P<pk>\d_+)/
+            # django2.0中的path会多一个\，例子：'/rbac\/permission/del/(?P<pk>\d+)/'
+            # 为了兼容django2.0中的path,要把\/换成/,最后成为：/rbac/permission/del/(?P<pk>\d+)/
 
             if check_url_exclude(url):  # 判断是否admin、login等我们不需要的url，是的话直接跳过
                 continue

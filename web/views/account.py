@@ -1,5 +1,6 @@
 from django.shortcuts import redirect, render
 
+from rbac.service.init_permission import init_permission
 from web import models
 from web.utils.md5 import gen_md5
 
@@ -16,6 +17,9 @@ def login(request):
         return render(request, 'login.html', {'msg': '用户名或错误'})
 
     request.session['user_info'] = {'id': user.id, 'nickname': user.realname}
+
+    # 权限信息初始化
+    init_permission(user, request)
 
     return redirect('/index/')
 

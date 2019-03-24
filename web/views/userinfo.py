@@ -21,8 +21,7 @@ class UserInfoHandler(StarkHandler):
         Option(field='department', is_multi=True),
     ]
 
-    # 这个的优先级要大于其父类的
-    def get_model_form_class(self, is_add=False):
+    def get_model_form_class(self, is_add, request, pk, *args, **kwargs):
         if is_add:
             return UserInfoAddModelForm
         else:

@@ -1,4 +1,5 @@
 {% load staticfiles %}
+{% load rbac %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,6 +12,7 @@
     <link rel="stylesheet" href="{% static 'strak/css/commons.css' %} "/>
     <link rel="stylesheet" href="{% static 'strak/css/nav.css' %} "/>
     <link rel="stylesheet" href="{% static 'strak/css/search-group.css' %}">
+    <link rel="stylesheet" href="{% static 'rbac/css/rbac.css' %}">
     <style>
         body {
             margin: 0;
@@ -160,11 +162,12 @@
 <div class="pg-body">
     <div class="left-menu">
         <div class="menu-body">
+            {% multi_menu request %}
         </div>
     </div>
     <div class="right-body">
 
-
+        {% breadcrumb request %}
         {% block content %} {% endblock %}
     </div>
 </div>
@@ -174,6 +177,7 @@
 <script src="{% static 'strak/plugins/bootstrap/js/bootstrap.js' %} "></script>
 <script src="{% static 'strak/plugins/datetimepicker/js/bootstrap-datetimepicker.js' %} "></script>
 <script src="{% static 'strak/plugins/datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js' %} "></script>
+<script src="{% static 'rbac/js/rbac.js' %}"></script>
 <script>
     $('.form_date').datetimepicker({
         minView: 'month',

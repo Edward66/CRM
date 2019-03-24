@@ -38,7 +38,7 @@ INSTALLED_APPS = [
 
     'stark.apps.StarkConfig',
     'web.apps.WebConfig',
-    'rbac.apps.RbacConfig', # 这样优先会从stark里面找
+    'rbac.apps.RbacConfig',  # 这样优先会从stark里面找
 ]
 
 MIDDLEWARE = [
@@ -49,6 +49,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'rbac.middlewares.rbac.RbacMiddleware',
 ]
 
 ROOT_URLCONF = 'crm.urls'
@@ -116,3 +118,27 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+
+#################################### 权限配置 ####################################
+
+RBAC_USER_MODEL_CLASS = 'web.models.UserInfo'
+
+AUTO_DISCOVER_EXCLUDE = [
+    '/admin/',
+    '/login/',
+    '/logout/',
+    '/index/',
+]
+
+# 相关配置：权限和菜单的session key
+PERMISSION_SESSION_KEY = 'permission_url_list_key'
+MENU_SESSION_KEY = 'permission_menu_key'
+
+# 需要登录，但无需权限的URL
+NO_PERMISSION_LIST = [
+    '/logout/',
+    '/index/',
+]
+
+# 白名单，无需登录就可以访问
+WHITE_LIST = ['/login/', '/admin/.*']
